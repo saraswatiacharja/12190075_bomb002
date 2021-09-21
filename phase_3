@@ -76,14 +76,17 @@ Dump of assembler code for function phase_3:
    0x0000000000400fa8 <+155>:	cmpl   $0x5,(%rsp)				
    0x0000000000400fac <+159>:	jg     0x400fb4 <phase_3+167>			//jump if value of rsp is greater than 5
    0x0000000000400fae <+161>:	cmp    0x4(%rsp),%eax
-   0x0000000000400fb2 <+165>:	je     0x400fb9 <phase_3+172>			//jump if it is only the value of 0x4(%rsp) and %eax
+   0x0000000000400fb2 <+165>:	je     0x400fb9 <phase_3+172>			//jump if it is equal with the value of 0x4(%rsp) and %eax
    0x0000000000400fb4 <+167>:	callq  0x401438 <explode_bomb>
-   0x0000000000400fb9 <+172>:	mov    0x8(%rsp),%rax				//compares
+   0x0000000000400fb9 <+172>:	mov    0x8(%rsp),%rax				
    0x0000000000400fbe <+177>:	xor    %fs:0x28,%rax
    0x0000000000400fc7 <+186>:	je     0x400fce <phase_3+193>
    0x0000000000400fc9 <+188>:	callq  0x400b00 <__stack_chk_fail@plt>
-   0x0000000000400fce <+193>:	add    $0x18,%rsp
+   0x0000000000400fce <+193>:	add    $0x18,%rsp                       //closing of stack frame
    0x0000000000400fd2 <+197>:	retq   
+   
+  From the above code, there is a call to  0x0000000000400fce which compares our second digit with the correct second digit
+
 End of assembler dump.
 (gdb) x/d 0x0000000000400f33 						
 0x400f33 <phase_3+38>:	2130835587
@@ -660,3 +663,8 @@ Phase 1 defused. How about the next one?
 That's number 2.  Keep going!
 4 0					//Solution for phase_3
 Halfway there!
+
+As we can see, our digit of 4 is right as the first input of the digit being between 1 and 7.
+So from the above information register we get the value of eax that is 0 (Second value)
+
+Therefore the solution for phase 3 is 4 0
