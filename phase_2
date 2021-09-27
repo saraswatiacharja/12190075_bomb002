@@ -111,7 +111,7 @@ Dump of assembler code for function phase_2:
    0x0000000000400ec2 <+25>:	callq  0x40145a <read_six_numbers>
 => 0x0000000000400ec7 <+30>:	cmpl   $0x1,(%rsp)  				//So we compare 1 with rsp
    0x0000000000400ecb <+34>:	je     0x400ed2 <phase_2+41>
-   0x0000000000400ecd <+36>:	callq  0x401438 <explode_bomb>
+   0x0000000000400ecd <+36>:	callq  0x401438 <explode_bomb> 
    0x0000000000400ed2 <+41>:	mov    %rsp,%rbx
    0x0000000000400ed5 <+44>:	lea    0x14(%rsp),%rbp
    0x0000000000400eda <+49>:	mov    (%rbx),%eax
