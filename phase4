@@ -1,0 +1,1052 @@
+gcit@gcit-OptiPlex-3040:~/Desktop/saras/Assignment 1/bomb002$ gdb bomb   //debugger which allows us to see what is going on `inside'
+another program while it executes.
+GNU gdb (Ubuntu 9.2-0ubuntu1~20.04) 9.2
+Copyright (C) 2020 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+Type "show copying" and "show warranty" for details.
+This GDB was configured as "x86_64-linux-gnu".
+Type "show configuration" for configuration details.
+For bug reporting instructions, please see:
+<http://www.gnu.org/software/gdb/bugs/>.
+Find the GDB manual and other documentation resources online at:
+    <http://www.gnu.org/software/gdb/documentation/>.
+
+For help, type "help".
+Type "apropos word" to search for commands related to "word"...
+Reading symbols from bomb...
+(gdb) b phase_4								//breakpoint which will stop execution
+Breakpoint 1 at 0x40100e
+(gdb) run assign.txt								//run file
+Starting program: /home/gcit/Desktop/saras/Assignment 1/bomb002/bomb assign.txt
+Welcome to my fiendish little bomb. You have 6 phases with
+which to blow yourself up. Have a nice day!
+Phase 1 defused. How about the next one?
+1 2 4 8 16 32
+That's number 2.  Keep going!
+4 0
+Halfway there!
+1 2										//user input that i have given for test
+
+Breakpoint 1, 0x000000000040100e in phase_4 ()
+(gdb) disas
+Dump of assembler code for function phase_4:
+=> 0x000000000040100e <+0>:	sub    $0x18,%rsp
+   0x0000000000401012 <+4>:	mov    %fs:0x28,%rax
+   0x000000000040101b <+13>:	mov    %rax,0x8(%rsp)
+   0x0000000000401020 <+18>:	xor    %eax,%eax
+   0x0000000000401022 <+20>:	mov    %rsp,%rcx
+   0x0000000000401025 <+23>:	lea    0x4(%rsp),%rdx
+   0x000000000040102a <+28>:	mov    $0x4025b7,%esi
+   0x000000000040102f <+33>:	callq  0x400bb0 <__isoc99_sscanf@plt>
+   0x0000000000401034 <+38>:	cmp    $0x2,%eax
+   0x0000000000401037 <+41>:	jne    0x401044 <phase_4+54>
+   0x0000000000401039 <+43>:	mov    (%rsp),%eax
+   0x000000000040103c <+46>:	sub    $0x2,%eax
+   0x000000000040103f <+49>:	cmp    $0x2,%eax
+   0x0000000000401042 <+52>:	jbe    0x401049 <phase_4+59>
+   0x0000000000401044 <+54>:	callq  0x401438 <explode_bomb>
+   0x0000000000401049 <+59>:	mov    (%rsp),%esi
+   0x000000000040104c <+62>:	mov    $0x5,%edi
+   0x0000000000401051 <+67>:	callq  0x400fd3 <func4>
+   0x0000000000401056 <+72>:	cmp    0x4(%rsp),%eax
+   0x000000000040105a <+76>:	je     0x401061 <phase_4+83>
+   0x000000000040105c <+78>:	callq  0x401438 <explode_bomb>
+--Type <RET> for more, q to quit, c to continue without paging--c
+   0x0000000000401061 <+83>:	mov    0x8(%rsp),%rax
+   0x0000000000401066 <+88>:	xor    %fs:0x28,%rax
+   0x000000000040106f <+97>:	je     0x401076 <phase_4+104>
+   0x0000000000401071 <+99>:	callq  0x400b00 <__stack_chk_fail@plt>
+   0x0000000000401076 <+104>:	add    $0x18,%rsp
+   0x000000000040107a <+108>:	retq   
+End of assembler dump.
+(gdb) x/s 0x4025b7
+0x4025b7:	"%d %d"							// We get a hint that we two require two user input (integer)
+(gdb) u* 0x0000000000401034							// To directly execute, i used the until here
+0x0000000000401034 in phase_4 ()
+(gdb) disas									// disassmbler
+Dump of assembler code for function phase_4:
+   0x000000000040100e <+0>:	sub    $0x18,%rsp
+   0x0000000000401012 <+4>:	mov    %fs:0x28,%rax
+   0x000000000040101b <+13>:	mov    %rax,0x8(%rsp)
+   0x0000000000401020 <+18>:	xor    %eax,%eax
+   0x0000000000401022 <+20>:	mov    %rsp,%rcx
+   0x0000000000401025 <+23>:	lea    0x4(%rsp),%rdx
+   0x000000000040102a <+28>:	mov    $0x4025b7,%esi
+   0x000000000040102f <+33>:	callq  0x400bb0 <__isoc99_sscanf@plt>
+=> 0x0000000000401034 <+38>:	cmp    $0x2,%eax				// eax is compared with value 2
+   0x0000000000401037 <+41>:	jne    0x401044 <phase_4+54>
+   0x0000000000401039 <+43>:	mov    (%rsp),%eax
+   0x000000000040103c <+46>:	sub    $0x2,%eax
+   0x000000000040103f <+49>:	cmp    $0x2,%eax
+   0x0000000000401042 <+52>:	jbe    0x401049 <phase_4+59>
+   0x0000000000401044 <+54>:	callq  0x401438 <explode_bomb>
+   0x0000000000401049 <+59>:	mov    (%rsp),%esi
+   0x000000000040104c <+62>:	mov    $0x5,%edi
+   0x0000000000401051 <+67>:	callq  0x400fd3 <func4>
+   0x0000000000401056 <+72>:	cmp    0x4(%rsp),%eax
+   0x000000000040105a <+76>:	je     0x401061 <phase_4+83>
+   0x000000000040105c <+78>:	callq  0x401438 <explode_bomb>
+   0x0000000000401061 <+83>:	mov    0x8(%rsp),%rax
+   0x0000000000401066 <+88>:	xor    %fs:0x28,%rax
+   0x000000000040106f <+97>:	je     0x401076 <phase_4+104>
+   0x0000000000401071 <+99>:	callq  0x400b00 <__stack_chk_fail@plt>
+   0x0000000000401076 <+104>:	add    $0x18,%rsp
+   0x000000000040107a <+108>:	retq   
+End of assembler dump.
+(gdb) i r									// information register that store data elements for processing
+rax            0x2                 2
+rbx            0x7fffffffdf58      140737488346968
+rcx            0x0                 0
+rdx            0x7fffffffde40      140737488346688
+rsi            0x0                 0
+rdi            0x7fffffffd7f0      140737488345072
+rbp            0x0                 0x0
+rsp            0x7fffffffde40      0x7fffffffde40
+r8             0xffffffff          4294967295
+r9             0x0                 0
+r10            0x7ffff7f5bac0      140737353464512
+r11            0x0                 0
+r12            0x400c60            4197472
+r13            0x7fffffffdf50      140737488346960
+r14            0x0                 0
+r15            0x0                 0
+rip            0x401034            0x401034 <phase_4+38>
+eflags         0x202               [ IF ]
+cs             0x33                51
+ss             0x2b                43
+ds             0x0                 0
+es             0x0                 0
+fs             0x0                 0
+gs             0x0                 0
+(gdb) ni								//next instruction
+0x0000000000401037 in phase_4 ()
+(gdb) disas
+Dump of assembler code for function phase_4:
+   0x000000000040100e <+0>:	sub    $0x18,%rsp
+   0x0000000000401012 <+4>:	mov    %fs:0x28,%rax
+   0x000000000040101b <+13>:	mov    %rax,0x8(%rsp)
+   0x0000000000401020 <+18>:	xor    %eax,%eax
+   0x0000000000401022 <+20>:	mov    %rsp,%rcx
+   0x0000000000401025 <+23>:	lea    0x4(%rsp),%rdx
+   0x000000000040102a <+28>:	mov    $0x4025b7,%esi
+   0x000000000040102f <+33>:	callq  0x400bb0 <__isoc99_sscanf@plt>
+   0x0000000000401034 <+38>:	cmp    $0x2,%eax
+=> 0x0000000000401037 <+41>:	jne    0x401044 <phase_4+54>	 // condition is if eax is not equal to 2, we have to jump to phase_4+54
+   0x0000000000401039 <+43>:	mov    (%rsp),%eax 
+   0x000000000040103c <+46>:	sub    $0x2,%eax
+   0x000000000040103f <+49>:	cmp    $0x2,%eax
+   0x0000000000401042 <+52>:	jbe    0x401049 <phase_4+59>
+   0x0000000000401044 <+54>:	callq  0x401438 <explode_bomb>
+   0x0000000000401049 <+59>:	mov    (%rsp),%esi
+   0x000000000040104c <+62>:	mov    $0x5,%edi
+   0x0000000000401051 <+67>:	callq  0x400fd3 <func4>
+   0x0000000000401056 <+72>:	cmp    0x4(%rsp),%eax
+   0x000000000040105a <+76>:	je     0x401061 <phase_4+83>
+   0x000000000040105c <+78>:	callq  0x401438 <explode_bomb>
+   0x0000000000401061 <+83>:	mov    0x8(%rsp),%rax
+   0x0000000000401066 <+88>:	xor    %fs:0x28,%rax
+   0x000000000040106f <+97>:	je     0x401076 <phase_4+104>
+   0x0000000000401071 <+99>:	callq  0x400b00 <__stack_chk_fail@plt>
+   0x0000000000401076 <+104>:	add    $0x18,%rsp
+   0x000000000040107a <+108>:	retq   
+End of assembler dump.
+(gdb) ni						// next instruction
+0x0000000000401039 in phase_4 ()
+(gdb) disas
+Dump of assembler code for function phase_4:
+   0x000000000040100e <+0>:	sub    $0x18,%rsp
+   0x0000000000401012 <+4>:	mov    %fs:0x28,%rax
+   0x000000000040101b <+13>:	mov    %rax,0x8(%rsp)
+   0x0000000000401020 <+18>:	xor    %eax,%eax
+   0x0000000000401022 <+20>:	mov    %rsp,%rcx
+   0x0000000000401025 <+23>:	lea    0x4(%rsp),%rdx
+   0x000000000040102a <+28>:	mov    $0x4025b7,%esi
+   0x000000000040102f <+33>:	callq  0x400bb0 <__isoc99_sscanf@plt>
+   0x0000000000401034 <+38>:	cmp    $0x2,%eax
+   0x0000000000401037 <+41>:	jne    0x401044 <phase_4+54>
+=> 0x0000000000401039 <+43>:	mov    (%rsp),%eax // if above condition is not fullfill, then this line is executed where rsp value is move to eax
+   0x000000000040103c <+46>:	sub    $0x2,%eax
+   0x000000000040103f <+49>:	cmp    $0x2,%eax
+   0x0000000000401042 <+52>:	jbe    0x401049 <phase_4+59>
+   0x0000000000401044 <+54>:	callq  0x401438 <explode_bomb>
+   0x0000000000401049 <+59>:	mov    (%rsp),%esi
+   0x000000000040104c <+62>:	mov    $0x5,%edi
+   0x0000000000401051 <+67>:	callq  0x400fd3 <func4>
+   0x0000000000401056 <+72>:	cmp    0x4(%rsp),%eax
+   0x000000000040105a <+76>:	je     0x401061 <phase_4+83>
+   0x000000000040105c <+78>:	callq  0x401438 <explode_bomb>
+   0x0000000000401061 <+83>:	mov    0x8(%rsp),%rax
+   0x0000000000401066 <+88>:	xor    %fs:0x28,%rax
+   0x000000000040106f <+97>:	je     0x401076 <phase_4+104>
+   0x0000000000401071 <+99>:	callq  0x400b00 <__stack_chk_fail@plt>
+   0x0000000000401076 <+104>:	add    $0x18,%rsp
+   0x000000000040107a <+108>:	retq   
+End of assembler dump.
+(gdb) i r							// information register
+rax            0x2                 2
+rbx            0x7fffffffdf58      140737488346968
+rcx            0x0                 0
+rdx            0x7fffffffde40      140737488346688
+rsi            0x0                 0
+rdi            0x7fffffffd7f0      140737488345072
+rbp            0x0                 0x0
+rsp            0x7fffffffde40      0x7fffffffde40
+r8             0xffffffff          4294967295
+r9             0x0                 0
+r10            0x7ffff7f5bac0      140737353464512
+r11            0x0                 0
+r12            0x400c60            4197472
+r13            0x7fffffffdf50      140737488346960
+r14            0x0                 0
+r15            0x0                 0
+rip            0x401039            0x401039 <phase_4+43>
+eflags         0x246               [ PF ZF IF ]
+cs             0x33                51
+ss             0x2b                43
+ds             0x0                 0
+es             0x0                 0
+fs             0x0                 0
+gs             0x0                 0
+(gdb) x/d 0x7fffffffde40            // print the digit to get the rsp value. % rsp contain the second term of a user input.
+0x7fffffffde40:	2	     // rsp value is 2 (which is the second term of user input)
+(gdb) ni
+0x000000000040103c in phase_4 ()
+(gdb) disas
+Dump of assembler code for function phase_4:
+   0x000000000040100e <+0>:	sub    $0x18,%rsp
+   0x0000000000401012 <+4>:	mov    %fs:0x28,%rax
+   0x000000000040101b <+13>:	mov    %rax,0x8(%rsp)
+   0x0000000000401020 <+18>:	xor    %eax,%eax
+   0x0000000000401022 <+20>:	mov    %rsp,%rcx
+   0x0000000000401025 <+23>:	lea    0x4(%rsp),%rdx
+   0x000000000040102a <+28>:	mov    $0x4025b7,%esi
+   0x000000000040102f <+33>:	callq  0x400bb0 <__isoc99_sscanf@plt>
+   0x0000000000401034 <+38>:	cmp    $0x2,%eax
+   0x0000000000401037 <+41>:	jne    0x401044 <phase_4+54>
+   0x0000000000401039 <+43>:	mov    (%rsp),%eax
+=> 0x000000000040103c <+46>:	sub    $0x2,%eax	    	// 2 is subtracted from %eax, now eax = 0;
+   0x000000000040103f <+49>:	cmp    $0x2,%eax           	
+   0x0000000000401042 <+52>:	jbe    0x401049 <phase_4+59>  
+   0x0000000000401044 <+54>:	callq  0x401438 <explode_bomb>
+   0x0000000000401049 <+59>:	mov    (%rsp),%esi
+   0x000000000040104c <+62>:	mov    $0x5,%edi
+   0x0000000000401051 <+67>:	callq  0x400fd3 <func4>
+   0x0000000000401056 <+72>:	cmp    0x4(%rsp),%eax
+   0x000000000040105a <+76>:	je     0x401061 <phase_4+83>
+   0x000000000040105c <+78>:	callq  0x401438 <explode_bomb>
+   0x0000000000401061 <+83>:	mov    0x8(%rsp),%rax
+   0x0000000000401066 <+88>:	xor    %fs:0x28,%rax
+   0x000000000040106f <+97>:	je     0x401076 <phase_4+104>
+   0x0000000000401071 <+99>:	callq  0x400b00 <__stack_chk_fail@plt>
+   0x0000000000401076 <+104>:	add    $0x18,%rsp
+   0x000000000040107a <+108>:	retq   
+End of assembler dump.
+(gdb) ni
+0x000000000040103f in phase_4 ()
+(gdb) disas
+Dump of assembler code for function phase_4:
+   0x000000000040100e <+0>:	sub    $0x18,%rsp
+   0x0000000000401012 <+4>:	mov    %fs:0x28,%rax
+   0x000000000040101b <+13>:	mov    %rax,0x8(%rsp)
+   0x0000000000401020 <+18>:	xor    %eax,%eax
+   0x0000000000401022 <+20>:	mov    %rsp,%rcx
+   0x0000000000401025 <+23>:	lea    0x4(%rsp),%rdx
+   0x000000000040102a <+28>:	mov    $0x4025b7,%esi
+   0x000000000040102f <+33>:	callq  0x400bb0 <__isoc99_sscanf@plt>
+   0x0000000000401034 <+38>:	cmp    $0x2,%eax
+   0x0000000000401037 <+41>:	jne    0x401044 <phase_4+54>
+   0x0000000000401039 <+43>:	mov    (%rsp),%eax
+   0x000000000040103c <+46>:	sub    $0x2,%eax
+=> 0x000000000040103f <+49>:	cmp    $0x2,%eax				// compare %eax with value 2, where eax now is 0.
+   0x0000000000401042 <+52>:	jbe    0x401049 <phase_4+59>			
+   0x0000000000401044 <+54>:	callq  0x401438 <explode_bomb>
+   0x0000000000401049 <+59>:	mov    (%rsp),%esi
+   0x000000000040104c <+62>:	mov    $0x5,%edi
+   0x0000000000401051 <+67>:	callq  0x400fd3 <func4>
+   0x0000000000401056 <+72>:	cmp    0x4(%rsp),%eax
+   0x000000000040105a <+76>:	je     0x401061 <phase_4+83>
+   0x000000000040105c <+78>:	callq  0x401438 <explode_bomb>
+   0x0000000000401061 <+83>:	mov    0x8(%rsp),%rax
+   0x0000000000401066 <+88>:	xor    %fs:0x28,%rax
+   0x000000000040106f <+97>:	je     0x401076 <phase_4+104>
+   0x0000000000401071 <+99>:	callq  0x400b00 <__stack_chk_fail@plt>
+   0x0000000000401076 <+104>:	add    $0x18,%rsp
+   0x000000000040107a <+108>:	retq   
+End of assembler dump.
+(gdb) ni
+0x0000000000401042 in phase_4 ()
+(gdb) disas
+Dump of assembler code for function phase_4:
+   0x000000000040100e <+0>:	sub    $0x18,%rsp
+   0x0000000000401012 <+4>:	mov    %fs:0x28,%rax
+   0x000000000040101b <+13>:	mov    %rax,0x8(%rsp)
+   0x0000000000401020 <+18>:	xor    %eax,%eax
+   0x0000000000401022 <+20>:	mov    %rsp,%rcx
+   0x0000000000401025 <+23>:	lea    0x4(%rsp),%rdx
+   0x000000000040102a <+28>:	mov    $0x4025b7,%esi
+   0x000000000040102f <+33>:	callq  0x400bb0 <__isoc99_sscanf@plt>
+   0x0000000000401034 <+38>:	cmp    $0x2,%eax
+   0x0000000000401037 <+41>:	jne    0x401044 <phase_4+54>
+   0x0000000000401039 <+43>:	mov    (%rsp),%eax
+   0x000000000040103c <+46>:	sub    $0x2,%eax
+   0x000000000040103f <+49>:	cmp    $0x2,%eax
+=> 0x0000000000401042 <+52>:	jbe    0x401049 <phase_4+59>	  // If %eax value is below 2, then jump to phase_4+59. 
+   0x0000000000401044 <+54>:	callq  0x401438 <explode_bomb>
+   0x0000000000401049 <+59>:	mov    (%rsp),%esi
+   0x000000000040104c <+62>:	mov    $0x5,%edi
+   0x0000000000401051 <+67>:	callq  0x400fd3 <func4>
+   0x0000000000401056 <+72>:	cmp    0x4(%rsp),%eax
+   0x000000000040105a <+76>:	je     0x401061 <phase_4+83>
+   0x000000000040105c <+78>:	callq  0x401438 <explode_bomb>
+   0x0000000000401061 <+83>:	mov    0x8(%rsp),%rax
+   0x0000000000401066 <+88>:	xor    %fs:0x28,%rax
+   0x000000000040106f <+97>:	je     0x401076 <phase_4+104>
+   0x0000000000401071 <+99>:	callq  0x400b00 <__stack_chk_fail@plt>
+   0x0000000000401076 <+104>:	add    $0x18,%rsp
+   0x000000000040107a <+108>:	retq   
+End of assembler dump.
+(gdb) u*0x0000000000401049	//Since eax=0 is below 2, i have directly execute the phase_4+59. Since 0 is less then 2, we can directly jump to phase_4+59. From here we will get our second term.
+0x0000000000401049 in phase_4 ()
+(gdb) disas
+Dump of assembler code for function phase_4:
+   0x000000000040100e <+0>:	sub    $0x18,%rsp
+   0x0000000000401012 <+4>:	mov    %fs:0x28,%rax
+   0x000000000040101b <+13>:	mov    %rax,0x8(%rsp)
+   0x0000000000401020 <+18>:	xor    %eax,%eax
+   0x0000000000401022 <+20>:	mov    %rsp,%rcx
+   0x0000000000401025 <+23>:	lea    0x4(%rsp),%rdx
+   0x000000000040102a <+28>:	mov    $0x4025b7,%esi
+   0x000000000040102f <+33>:	callq  0x400bb0 <__isoc99_sscanf@plt>
+   0x0000000000401034 <+38>:	cmp    $0x2,%eax
+   0x0000000000401037 <+41>:	jne    0x401044 <phase_4+54>
+   0x0000000000401039 <+43>:	mov    (%rsp),%eax
+   0x000000000040103c <+46>:	sub    $0x2,%eax
+   0x000000000040103f <+49>:	cmp    $0x2,%eax
+   0x0000000000401042 <+52>:	jbe    0x401049 <phase_4+59>
+   0x0000000000401044 <+54>:	callq  0x401438 <explode_bomb>
+=> 0x0000000000401049 <+59>:	mov    (%rsp),%esi             //%rsp is move to %esi
+   0x000000000040104c <+62>:	mov    $0x5,%edi
+   0x0000000000401051 <+67>:	callq  0x400fd3 <func4>
+   0x0000000000401056 <+72>:	cmp    0x4(%rsp),%eax
+   0x000000000040105a <+76>:	je     0x401061 <phase_4+83>
+   0x000000000040105c <+78>:	callq  0x401438 <explode_bomb>
+   0x0000000000401061 <+83>:	mov    0x8(%rsp),%rax
+   0x0000000000401066 <+88>:	xor    %fs:0x28,%rax
+   0x000000000040106f <+97>:	je     0x401076 <phase_4+104>
+   0x0000000000401071 <+99>:	callq  0x400b00 <__stack_chk_fail@plt>
+   0x0000000000401076 <+104>:	add    $0x18,%rsp
+   0x000000000040107a <+108>:	retq   
+End of assembler dump.
+(gdb) ni
+0x000000000040104c in phase_4 ()
+(gdb) disas
+Dump of assembler code for function phase_4:
+   0x000000000040100e <+0>:	sub    $0x18,%rsp
+   0x0000000000401012 <+4>:	mov    %fs:0x28,%rax
+   0x000000000040101b <+13>:	mov    %rax,0x8(%rsp)
+   0x0000000000401020 <+18>:	xor    %eax,%eax
+   0x0000000000401022 <+20>:	mov    %rsp,%rcx
+   0x0000000000401025 <+23>:	lea    0x4(%rsp),%rdx
+   0x000000000040102a <+28>:	mov    $0x4025b7,%esi
+   0x000000000040102f <+33>:	callq  0x400bb0 <__isoc99_sscanf@plt>
+   0x0000000000401034 <+38>:	cmp    $0x2,%eax
+   0x0000000000401037 <+41>:	jne    0x401044 <phase_4+54>
+   0x0000000000401039 <+43>:	mov    (%rsp),%eax
+   0x000000000040103c <+46>:	sub    $0x2,%eax
+   0x000000000040103f <+49>:	cmp    $0x2,%eax
+   0x0000000000401042 <+52>:	jbe    0x401049 <phase_4+59>
+   0x0000000000401044 <+54>:	callq  0x401438 <explode_bomb>
+   0x0000000000401049 <+59>:	mov    (%rsp),%esi
+=> 0x000000000040104c <+62>:	mov    $0x5,%edi			// The value 5 is then stored in %edi
+   0x0000000000401051 <+67>:	callq  0x400fd3 <func4>
+   0x0000000000401056 <+72>:	cmp    0x4(%rsp),%eax
+   0x000000000040105a <+76>:	je     0x401061 <phase_4+83>
+   0x000000000040105c <+78>:	callq  0x401438 <explode_bomb>
+   0x0000000000401061 <+83>:	mov    0x8(%rsp),%rax
+   0x0000000000401066 <+88>:	xor    %fs:0x28,%rax
+   0x000000000040106f <+97>:	je     0x401076 <phase_4+104>
+   0x0000000000401071 <+99>:	callq  0x400b00 <__stack_chk_fail@plt>
+   0x0000000000401076 <+104>:	add    $0x18,%rsp
+   0x000000000040107a <+108>:	retq   
+End of assembler dump.
+(gdb) ni
+0x0000000000401051 in phase_4 ()
+(gdb) disas
+Dump of assembler code for function phase_4:
+   0x000000000040100e <+0>:	sub    $0x18,%rsp
+   0x0000000000401012 <+4>:	mov    %fs:0x28,%rax
+   0x000000000040101b <+13>:	mov    %rax,0x8(%rsp)
+   0x0000000000401020 <+18>:	xor    %eax,%eax
+   0x0000000000401022 <+20>:	mov    %rsp,%rcx
+   0x0000000000401025 <+23>:	lea    0x4(%rsp),%rdx
+   0x000000000040102a <+28>:	mov    $0x4025b7,%esi
+   0x000000000040102f <+33>:	callq  0x400bb0 <__isoc99_sscanf@plt>
+   0x0000000000401034 <+38>:	cmp    $0x2,%eax
+   0x0000000000401037 <+41>:	jne    0x401044 <phase_4+54>
+   0x0000000000401039 <+43>:	mov    (%rsp),%eax
+   0x000000000040103c <+46>:	sub    $0x2,%eax
+   0x000000000040103f <+49>:	cmp    $0x2,%eax
+   0x0000000000401042 <+52>:	jbe    0x401049 <phase_4+59>
+   0x0000000000401044 <+54>:	callq  0x401438 <explode_bomb>
+   0x0000000000401049 <+59>:	mov    (%rsp),%esi
+   0x000000000040104c <+62>:	mov    $0x5,%edi
+=> 0x0000000000401051 <+67>:	callq  0x400fd3 <func4>  		//recurssion
+   0x0000000000401056 <+72>:	cmp    0x4(%rsp),%eax
+   0x000000000040105a <+76>:	je     0x401061 <phase_4+83>
+   0x000000000040105c <+78>:	callq  0x401438 <explode_bomb>
+   0x0000000000401061 <+83>:	mov    0x8(%rsp),%rax
+   0x0000000000401066 <+88>:	xor    %fs:0x28,%rax
+   0x000000000040106f <+97>:	je     0x401076 <phase_4+104>
+   0x0000000000401071 <+99>:	callq  0x400b00 <__stack_chk_fail@plt>
+   0x0000000000401076 <+104>:	add    $0x18,%rsp
+   0x000000000040107a <+108>:	retq   
+End of assembler dump.
+(gdb) ni
+0x0000000000401056 in phase_4 ()
+(gdb) disas
+Dump of assembler code for function phase_4:
+   0x000000000040100e <+0>:	sub    $0x18,%rsp
+   0x0000000000401012 <+4>:	mov    %fs:0x28,%rax
+   0x000000000040101b <+13>:	mov    %rax,0x8(%rsp)
+   0x0000000000401020 <+18>:	xor    %eax,%eax
+   0x0000000000401022 <+20>:	mov    %rsp,%rcx
+   0x0000000000401025 <+23>:	lea    0x4(%rsp),%rdx
+   0x000000000040102a <+28>:	mov    $0x4025b7,%esi
+   0x000000000040102f <+33>:	callq  0x400bb0 <__isoc99_sscanf@plt>
+   0x0000000000401034 <+38>:	cmp    $0x2,%eax
+   0x0000000000401037 <+41>:	jne    0x401044 <phase_4+54>
+   0x0000000000401039 <+43>:	mov    (%rsp),%eax
+   0x000000000040103c <+46>:	sub    $0x2,%eax
+   0x000000000040103f <+49>:	cmp    $0x2,%eax
+   0x0000000000401042 <+52>:	jbe    0x401049 <phase_4+59>
+   0x0000000000401044 <+54>:	callq  0x401438 <explode_bomb>
+   0x0000000000401049 <+59>:	mov    (%rsp),%esi
+   0x000000000040104c <+62>:	mov    $0x5,%edi
+   0x0000000000401051 <+67>:	callq  0x400fd3 <func4>
+=> 0x0000000000401056 <+72>:	cmp    0x4(%rsp),%eax         		//%eax is compared with 4+%rsp,  %eax = 24;
+   0x000000000040105a <+76>:	je     0x401061 <phase_4+83>
+   0x000000000040105c <+78>:	callq  0x401438 <explode_bomb>
+   0x0000000000401061 <+83>:	mov    0x8(%rsp),%rax
+   0x0000000000401066 <+88>:	xor    %fs:0x28,%rax
+   0x000000000040106f <+97>:	je     0x401076 <phase_4+104>
+   0x0000000000401071 <+99>:	callq  0x400b00 <__stack_chk_fail@plt>
+   0x0000000000401076 <+104>:	add    $0x18,%rsp
+   0x000000000040107a <+108>:	retq   
+End of assembler dump.
+(gdb) ni
+0x000000000040105a in phase_4 ()
+(gdb) disas
+Dump of assembler code for function phase_4:
+   0x000000000040100e <+0>:	sub    $0x18,%rsp
+   0x0000000000401012 <+4>:	mov    %fs:0x28,%rax
+   0x000000000040101b <+13>:	mov    %rax,0x8(%rsp)
+   0x0000000000401020 <+18>:	xor    %eax,%eax
+   0x0000000000401022 <+20>:	mov    %rsp,%rcx
+   0x0000000000401025 <+23>:	lea    0x4(%rsp),%rdx
+   0x000000000040102a <+28>:	mov    $0x4025b7,%esi
+   0x000000000040102f <+33>:	callq  0x400bb0 <__isoc99_sscanf@plt>
+   0x0000000000401034 <+38>:	cmp    $0x2,%eax
+   0x0000000000401037 <+41>:	jne    0x401044 <phase_4+54>
+   0x0000000000401039 <+43>:	mov    (%rsp),%eax
+   0x000000000040103c <+46>:	sub    $0x2,%eax
+   0x000000000040103f <+49>:	cmp    $0x2,%eax
+   0x0000000000401042 <+52>:	jbe    0x401049 <phase_4+59>
+   0x0000000000401044 <+54>:	callq  0x401438 <explode_bomb>
+   0x0000000000401049 <+59>:	mov    (%rsp),%esi
+   0x000000000040104c <+62>:	mov    $0x5,%edi
+   0x0000000000401051 <+67>:	callq  0x400fd3 <func4>
+   0x0000000000401056 <+72>:	cmp    0x4(%rsp),%eax
+=> 0x000000000040105a <+76>:	je     0x401061 <phase_4+83>		//if %eax, %eax = 24 is equal to 4+%rsp, execute the phase_4+83
+   0x000000000040105c <+78>:	callq  0x401438 <explode_bomb>
+   0x0000000000401061 <+83>:	mov    0x8(%rsp),%rax
+   0x0000000000401066 <+88>:	xor    %fs:0x28,%rax
+   0x000000000040106f <+97>:	je     0x401076 <phase_4+104>
+   0x0000000000401071 <+99>:	callq  0x400b00 <__stack_chk_fail@plt>
+   0x0000000000401076 <+104>:	add    $0x18,%rsp
+   0x000000000040107a <+108>:	retq   
+End of assembler dump.
+(gdb) ni
+0x000000000040105c in phase_4 ()
+(gdb) disas
+Dump of assembler code for function phase_4:
+   0x000000000040100e <+0>:	sub    $0x18,%rsp
+   0x0000000000401012 <+4>:	mov    %fs:0x28,%rax
+   0x000000000040101b <+13>:	mov    %rax,0x8(%rsp)
+   0x0000000000401020 <+18>:	xor    %eax,%eax
+   0x0000000000401022 <+20>:	mov    %rsp,%rcx
+   0x0000000000401025 <+23>:	lea    0x4(%rsp),%rdx
+   0x000000000040102a <+28>:	mov    $0x4025b7,%esi
+   0x000000000040102f <+33>:	callq  0x400bb0 <__isoc99_sscanf@plt>
+   0x0000000000401034 <+38>:	cmp    $0x2,%eax
+   0x0000000000401037 <+41>:	jne    0x401044 <phase_4+54>
+   0x0000000000401039 <+43>:	mov    (%rsp),%eax
+   0x000000000040103c <+46>:	sub    $0x2,%eax
+   0x000000000040103f <+49>:	cmp    $0x2,%eax
+   0x0000000000401042 <+52>:	jbe    0x401049 <phase_4+59>
+   0x0000000000401044 <+54>:	callq  0x401438 <explode_bomb>
+   0x0000000000401049 <+59>:	mov    (%rsp),%esi
+   0x000000000040104c <+62>:	mov    $0x5,%edi
+   0x0000000000401051 <+67>:	callq  0x400fd3 <func4>
+   0x0000000000401056 <+72>:	cmp    0x4(%rsp),%eax
+   0x000000000040105a <+76>:	je     0x401061 <phase_4+83>
+=> 0x000000000040105c <+78>:	callq  0x401438 <explode_bomb>   // Since %eax = 24, is not equal to 4+%rsp, the bomb get explode. If %eax = 24, is equal to 4+%rsp, first term is being found
+   0x0000000000401061 <+83>:	mov    0x8(%rsp),%rax
+   0x0000000000401066 <+88>:	xor    %fs:0x28,%rax
+   0x000000000040106f <+97>:	je     0x401076 <phase_4+104>
+   0x0000000000401071 <+99>:	callq  0x400b00 <__stack_chk_fail@plt>
+   0x0000000000401076 <+104>:	add    $0x18,%rsp
+   0x000000000040107a <+108>:	retq   
+End of assembler dump.
+(gdb) ni
+
+BOOM!!!
+The bomb has blown up.					// Explode as %eax = 24, is not equal to 4+%rsp
+[Inferior 1 (process 4121) exited with code 010]
+
+//Knowing the first term, the eax that is 24, which is determined by eax. The answer should be 24 and 2; lets try:
+
+
+(gdb) run assign.txt
+Starting program: /home/gcit/Desktop/saras/Assignment 1/bomb002/bomb assign.txt
+Welcome to my fiendish little bomb. You have 6 phases with
+which to blow yourself up. Have a nice day!
+Phase 1 defused. How about the next one?
+1 2 4 8 16 32
+That's number 2.  Keep going!
+4 0
+Halfway there!
+24 2							//Given right user input
+
+Breakpoint 1, 0x000000000040100e in phase_4 ()
+(gdb) disas
+Dump of assembler code for function phase_4:
+=> 0x000000000040100e <+0>:	sub    $0x18,%rsp
+   0x0000000000401012 <+4>:	mov    %fs:0x28,%rax
+   0x000000000040101b <+13>:	mov    %rax,0x8(%rsp)
+   0x0000000000401020 <+18>:	xor    %eax,%eax
+   0x0000000000401022 <+20>:	mov    %rsp,%rcx
+   0x0000000000401025 <+23>:	lea    0x4(%rsp),%rdx
+   0x000000000040102a <+28>:	mov    $0x4025b7,%esi
+   0x000000000040102f <+33>:	callq  0x400bb0 <__isoc99_sscanf@plt>
+   0x0000000000401034 <+38>:	cmp    $0x2,%eax
+   0x0000000000401037 <+41>:	jne    0x401044 <phase_4+54>
+   0x0000000000401039 <+43>:	mov    (%rsp),%eax
+   0x000000000040103c <+46>:	sub    $0x2,%eax
+   0x000000000040103f <+49>:	cmp    $0x2,%eax
+   0x0000000000401042 <+52>:	jbe    0x401049 <phase_4+59>
+   0x0000000000401044 <+54>:	callq  0x401438 <explode_bomb>
+   0x0000000000401049 <+59>:	mov    (%rsp),%esi
+   0x000000000040104c <+62>:	mov    $0x5,%edi
+   0x0000000000401051 <+67>:	callq  0x400fd3 <func4>
+   0x0000000000401056 <+72>:	cmp    0x4(%rsp),%eax
+   0x000000000040105a <+76>:	je     0x401061 <phase_4+83>
+   0x000000000040105c <+78>:	callq  0x401438 <explode_bomb>
+   0x0000000000401061 <+83>:	mov    0x8(%rsp),%rax
+   0x0000000000401066 <+88>:	xor    %fs:0x28,%rax
+   0x000000000040106f <+97>:	je     0x401076 <phase_4+104>
+   0x0000000000401071 <+99>:	callq  0x400b00 <__stack_chk_fail@plt>
+   0x0000000000401076 <+104>:	add    $0x18,%rsp
+   0x000000000040107a <+108>:	retq   
+End of assembler dump.
+(gdb) u* 0x0000000000401034				//We can directly execute the comparision part, using u*0x0000000000401034
+0x0000000000401034 in phase_4 ()
+(gdb) disas
+Dump of assembler code for function phase_4:
+   0x000000000040100e <+0>:	sub    $0x18,%rsp
+   0x0000000000401012 <+4>:	mov    %fs:0x28,%rax
+   0x000000000040101b <+13>:	mov    %rax,0x8(%rsp)
+   0x0000000000401020 <+18>:	xor    %eax,%eax
+   0x0000000000401022 <+20>:	mov    %rsp,%rcx
+   0x0000000000401025 <+23>:	lea    0x4(%rsp),%rdx
+   0x000000000040102a <+28>:	mov    $0x4025b7,%esi
+   0x000000000040102f <+33>:	callq  0x400bb0 <__isoc99_sscanf@plt>
+=> 0x0000000000401034 <+38>:	cmp    $0x2,%eax			// eax is compared with value 2
+   0x0000000000401037 <+41>:	jne    0x401044 <phase_4+54>
+   0x0000000000401039 <+43>:	mov    (%rsp),%eax
+   0x000000000040103c <+46>:	sub    $0x2,%eax
+   0x000000000040103f <+49>:	cmp    $0x2,%eax
+   0x0000000000401042 <+52>:	jbe    0x401049 <phase_4+59>
+   0x0000000000401044 <+54>:	callq  0x401438 <explode_bomb>
+   0x0000000000401049 <+59>:	mov    (%rsp),%esi
+   0x000000000040104c <+62>:	mov    $0x5,%edi
+   0x0000000000401051 <+67>:	callq  0x400fd3 <func4>
+   0x0000000000401056 <+72>:	cmp    0x4(%rsp),%eax
+   0x000000000040105a <+76>:	je     0x401061 <phase_4+83>
+   0x000000000040105c <+78>:	callq  0x401438 <explode_bomb>
+   0x0000000000401061 <+83>:	mov    0x8(%rsp),%rax
+   0x0000000000401066 <+88>:	xor    %fs:0x28,%rax
+   0x000000000040106f <+97>:	je     0x401076 <phase_4+104>
+   0x0000000000401071 <+99>:	callq  0x400b00 <__stack_chk_fail@plt>
+   0x0000000000401076 <+104>:	add    $0x18,%rsp
+   0x000000000040107a <+108>:	retq   
+End of assembler dump.
+(gdb) i r								// information register that store data elements for processing
+rax            0x2                 2
+rbx            0x7fffffffdf58      140737488346968
+rcx            0x0                 0
+rdx            0x7fffffffde40      140737488346688
+rsi            0x0                 0
+rdi            0x7fffffffd7f0      140737488345072
+rbp            0x0                 0x0
+rsp            0x7fffffffde40      0x7fffffffde40
+r8             0xffffffff          4294967295
+r9             0x0                 0
+r10            0x7ffff7f5bac0      140737353464512
+r11            0x0                 0
+r12            0x400c60            4197472
+r13            0x7fffffffdf50      140737488346960
+r14            0x0                 0
+r15            0x0                 0
+rip            0x401034            0x401034 <phase_4+38>
+eflags         0x202               [ IF ]
+cs             0x33                51
+ss             0x2b                43
+ds             0x0                 0
+es             0x0                 0
+fs             0x0                 0
+gs             0x0                 0
+(gdb) ni
+0x0000000000401037 in phase_4 ()
+(gdb) disas
+Dump of assembler code for function phase_4:
+   0x000000000040100e <+0>:	sub    $0x18,%rsp
+   0x0000000000401012 <+4>:	mov    %fs:0x28,%rax
+   0x000000000040101b <+13>:	mov    %rax,0x8(%rsp)
+   0x0000000000401020 <+18>:	xor    %eax,%eax
+   0x0000000000401022 <+20>:	mov    %rsp,%rcx
+   0x0000000000401025 <+23>:	lea    0x4(%rsp),%rdx
+   0x000000000040102a <+28>:	mov    $0x4025b7,%esi
+   0x000000000040102f <+33>:	callq  0x400bb0 <__isoc99_sscanf@plt>
+   0x0000000000401034 <+38>:	cmp    $0x2,%eax
+=> 0x0000000000401037 <+41>:	jne    0x401044 <phase_4+54>   // condition is if eax is not equal to 2, we have to jump to phase_4+54
+   0x0000000000401039 <+43>:	mov    (%rsp),%eax
+   0x000000000040103c <+46>:	sub    $0x2,%eax
+   0x000000000040103f <+49>:	cmp    $0x2,%eax
+   0x0000000000401042 <+52>:	jbe    0x401049 <phase_4+59>
+   0x0000000000401044 <+54>:	callq  0x401438 <explode_bomb>
+   0x0000000000401049 <+59>:	mov    (%rsp),%esi
+   0x000000000040104c <+62>:	mov    $0x5,%edi
+   0x0000000000401051 <+67>:	callq  0x400fd3 <func4>
+   0x0000000000401056 <+72>:	cmp    0x4(%rsp),%eax
+   0x000000000040105a <+76>:	je     0x401061 <phase_4+83>
+   0x000000000040105c <+78>:	callq  0x401438 <explode_bomb>
+   0x0000000000401061 <+83>:	mov    0x8(%rsp),%rax
+   0x0000000000401066 <+88>:	xor    %fs:0x28,%rax
+   0x000000000040106f <+97>:	je     0x401076 <phase_4+104>
+   0x0000000000401071 <+99>:	callq  0x400b00 <__stack_chk_fail@plt>
+   0x0000000000401076 <+104>:	add    $0x18,%rsp
+   0x000000000040107a <+108>:	retq   
+End of assembler dump.
+(gdb) ni
+0x0000000000401039 in phase_4 ()
+(gdb) disas
+Dump of assembler code for function phase_4:
+   0x000000000040100e <+0>:	sub    $0x18,%rsp
+   0x0000000000401012 <+4>:	mov    %fs:0x28,%rax
+   0x000000000040101b <+13>:	mov    %rax,0x8(%rsp)
+   0x0000000000401020 <+18>:	xor    %eax,%eax
+   0x0000000000401022 <+20>:	mov    %rsp,%rcx
+   0x0000000000401025 <+23>:	lea    0x4(%rsp),%rdx
+   0x000000000040102a <+28>:	mov    $0x4025b7,%esi
+   0x000000000040102f <+33>:	callq  0x400bb0 <__isoc99_sscanf@plt>
+   0x0000000000401034 <+38>:	cmp    $0x2,%eax
+   0x0000000000401037 <+41>:	jne    0x401044 <phase_4+54>
+=> 0x0000000000401039 <+43>:	mov    (%rsp),%eax   // if above condition is not fullfill, then this line is executed where rsp value is move to eax
+   0x000000000040103c <+46>:	sub    $0x2,%eax
+   0x000000000040103f <+49>:	cmp    $0x2,%eax
+   0x0000000000401042 <+52>:	jbe    0x401049 <phase_4+59>
+   0x0000000000401044 <+54>:	callq  0x401438 <explode_bomb>
+   0x0000000000401049 <+59>:	mov    (%rsp),%esi
+   0x000000000040104c <+62>:	mov    $0x5,%edi
+   0x0000000000401051 <+67>:	callq  0x400fd3 <func4>
+   0x0000000000401056 <+72>:	cmp    0x4(%rsp),%eax
+   0x000000000040105a <+76>:	je     0x401061 <phase_4+83>
+   0x000000000040105c <+78>:	callq  0x401438 <explode_bomb>
+   0x0000000000401061 <+83>:	mov    0x8(%rsp),%rax
+   0x0000000000401066 <+88>:	xor    %fs:0x28,%rax
+   0x000000000040106f <+97>:	je     0x401076 <phase_4+104>
+   0x0000000000401071 <+99>:	callq  0x400b00 <__stack_chk_fail@plt>
+   0x0000000000401076 <+104>:	add    $0x18,%rsp
+   0x000000000040107a <+108>:	retq   
+End of assembler dump.
+(gdb) i r
+rax            0x2                 2
+rbx            0x7fffffffdf58      140737488346968
+rcx            0x0                 0
+rdx            0x7fffffffde40      140737488346688
+rsi            0x0                 0
+rdi            0x7fffffffd7f0      140737488345072
+rbp            0x0                 0x0
+rsp            0x7fffffffde40      0x7fffffffde40
+r8             0xffffffff          4294967295
+r9             0x0                 0
+r10            0x7ffff7f5bac0      140737353464512
+r11            0x0                 0
+r12            0x400c60            4197472
+r13            0x7fffffffdf50      140737488346960
+r14            0x0                 0
+r15            0x0                 0
+rip            0x401039            0x401039 <phase_4+43>
+eflags         0x246               [ PF ZF IF ]
+cs             0x33                51
+ss             0x2b                43
+ds             0x0                 0
+es             0x0                 0
+fs             0x0                 0
+gs             0x0                 0
+(gdb) x/d 0x7fffffffde40		// print the digit to get the rsp value. % rsp contain the second term of a user input.
+0x7fffffffde40:	2	     // rsp value is 2 (which is the second term of user input)
+(gdb) ni
+0x000000000040103c in phase_4 ()
+(gdb) disas
+Dump of assembler code for function phase_4:
+   0x000000000040100e <+0>:	sub    $0x18,%rsp
+   0x0000000000401012 <+4>:	mov    %fs:0x28,%rax
+   0x000000000040101b <+13>:	mov    %rax,0x8(%rsp)
+   0x0000000000401020 <+18>:	xor    %eax,%eax
+   0x0000000000401022 <+20>:	mov    %rsp,%rcx
+   0x0000000000401025 <+23>:	lea    0x4(%rsp),%rdx
+   0x000000000040102a <+28>:	mov    $0x4025b7,%esi
+   0x000000000040102f <+33>:	callq  0x400bb0 <__isoc99_sscanf@plt>
+   0x0000000000401034 <+38>:	cmp    $0x2,%eax
+   0x0000000000401037 <+41>:	jne    0x401044 <phase_4+54>
+   0x0000000000401039 <+43>:	mov    (%rsp),%eax
+=> 0x000000000040103c <+46>:	sub    $0x2,%eax		// 2 is subtracted from %eax, now eax = 0;
+   0x000000000040103f <+49>:	cmp    $0x2,%eax
+   0x0000000000401042 <+52>:	jbe    0x401049 <phase_4+59>
+   0x0000000000401044 <+54>:	callq  0x401438 <explode_bomb>
+   0x0000000000401049 <+59>:	mov    (%rsp),%esi
+   0x000000000040104c <+62>:	mov    $0x5,%edi
+   0x0000000000401051 <+67>:	callq  0x400fd3 <func4>
+   0x0000000000401056 <+72>:	cmp    0x4(%rsp),%eax
+   0x000000000040105a <+76>:	je     0x401061 <phase_4+83>
+   0x000000000040105c <+78>:	callq  0x401438 <explode_bomb>
+   0x0000000000401061 <+83>:	mov    0x8(%rsp),%rax
+   0x0000000000401066 <+88>:	xor    %fs:0x28,%rax
+   0x000000000040106f <+97>:	je     0x401076 <phase_4+104>
+   0x0000000000401071 <+99>:	callq  0x400b00 <__stack_chk_fail@plt>
+   0x0000000000401076 <+104>:	add    $0x18,%rsp
+   0x000000000040107a <+108>:	retq   
+End of assembler dump.
+(gdb) ni
+0x000000000040103f in phase_4 ()
+(gdb) disas
+Dump of assembler code for function phase_4:
+   0x000000000040100e <+0>:	sub    $0x18,%rsp
+   0x0000000000401012 <+4>:	mov    %fs:0x28,%rax
+   0x000000000040101b <+13>:	mov    %rax,0x8(%rsp)
+   0x0000000000401020 <+18>:	xor    %eax,%eax
+   0x0000000000401022 <+20>:	mov    %rsp,%rcx
+   0x0000000000401025 <+23>:	lea    0x4(%rsp),%rdx
+   0x000000000040102a <+28>:	mov    $0x4025b7,%esi
+   0x000000000040102f <+33>:	callq  0x400bb0 <__isoc99_sscanf@plt>
+   0x0000000000401034 <+38>:	cmp    $0x2,%eax
+   0x0000000000401037 <+41>:	jne    0x401044 <phase_4+54>
+   0x0000000000401039 <+43>:	mov    (%rsp),%eax
+   0x000000000040103c <+46>:	sub    $0x2,%eax
+=> 0x000000000040103f <+49>:	cmp    $0x2,%eax			// compare %eax with value 2, where eax now is 0.
+   0x0000000000401042 <+52>:	jbe    0x401049 <phase_4+59>
+   0x0000000000401044 <+54>:	callq  0x401438 <explode_bomb>
+   0x0000000000401049 <+59>:	mov    (%rsp),%esi
+   0x000000000040104c <+62>:	mov    $0x5,%edi
+   0x0000000000401051 <+67>:	callq  0x400fd3 <func4>
+   0x0000000000401056 <+72>:	cmp    0x4(%rsp),%eax
+   0x000000000040105a <+76>:	je     0x401061 <phase_4+83>
+   0x000000000040105c <+78>:	callq  0x401438 <explode_bomb>
+   0x0000000000401061 <+83>:	mov    0x8(%rsp),%rax
+   0x0000000000401066 <+88>:	xor    %fs:0x28,%rax
+   0x000000000040106f <+97>:	je     0x401076 <phase_4+104>
+   0x0000000000401071 <+99>:	callq  0x400b00 <__stack_chk_fail@plt>
+   0x0000000000401076 <+104>:	add    $0x18,%rsp
+   0x000000000040107a <+108>:	retq   
+End of assembler dump.
+(gdb) ni
+0x0000000000401042 in phase_4 ()
+(gdb) disas
+Dump of assembler code for function phase_4:
+   0x000000000040100e <+0>:	sub    $0x18,%rsp
+   0x0000000000401012 <+4>:	mov    %fs:0x28,%rax
+   0x000000000040101b <+13>:	mov    %rax,0x8(%rsp)
+   0x0000000000401020 <+18>:	xor    %eax,%eax
+   0x0000000000401022 <+20>:	mov    %rsp,%rcx
+   0x0000000000401025 <+23>:	lea    0x4(%rsp),%rdx
+   0x000000000040102a <+28>:	mov    $0x4025b7,%esi
+   0x000000000040102f <+33>:	callq  0x400bb0 <__isoc99_sscanf@plt>
+   0x0000000000401034 <+38>:	cmp    $0x2,%eax
+   0x0000000000401037 <+41>:	jne    0x401044 <phase_4+54>
+   0x0000000000401039 <+43>:	mov    (%rsp),%eax
+   0x000000000040103c <+46>:	sub    $0x2,%eax
+   0x000000000040103f <+49>:	cmp    $0x2,%eax
+=> 0x0000000000401042 <+52>:	jbe    0x401049 <phase_4+59>  // If %eax value is below 2, then jump to phase_4+59.
+   0x0000000000401044 <+54>:	callq  0x401438 <explode_bomb>
+   0x0000000000401049 <+59>:	mov    (%rsp),%esi
+   0x000000000040104c <+62>:	mov    $0x5,%edi
+   0x0000000000401051 <+67>:	callq  0x400fd3 <func4>
+   0x0000000000401056 <+72>:	cmp    0x4(%rsp),%eax
+   0x000000000040105a <+76>:	je     0x401061 <phase_4+83>
+   0x000000000040105c <+78>:	callq  0x401438 <explode_bomb>
+   0x0000000000401061 <+83>:	mov    0x8(%rsp),%rax
+   0x0000000000401066 <+88>:	xor    %fs:0x28,%rax
+   0x000000000040106f <+97>:	je     0x401076 <phase_4+104>
+   0x0000000000401071 <+99>:	callq  0x400b00 <__stack_chk_fail@plt>
+   0x0000000000401076 <+104>:	add    $0x18,%rsp
+   0x000000000040107a <+108>:	retq   
+End of assembler dump.
+(gdb) ni
+0x0000000000401049 in phase_4 ()
+(gdb) disas
+Dump of assembler code for function phase_4:
+   0x000000000040100e <+0>:	sub    $0x18,%rsp
+   0x0000000000401012 <+4>:	mov    %fs:0x28,%rax
+   0x000000000040101b <+13>:	mov    %rax,0x8(%rsp)
+   0x0000000000401020 <+18>:	xor    %eax,%eax
+   0x0000000000401022 <+20>:	mov    %rsp,%rcx
+   0x0000000000401025 <+23>:	lea    0x4(%rsp),%rdx
+   0x000000000040102a <+28>:	mov    $0x4025b7,%esi
+   0x000000000040102f <+33>:	callq  0x400bb0 <__isoc99_sscanf@plt>
+   0x0000000000401034 <+38>:	cmp    $0x2,%eax
+   0x0000000000401037 <+41>:	jne    0x401044 <phase_4+54>
+   0x0000000000401039 <+43>:	mov    (%rsp),%eax
+   0x000000000040103c <+46>:	sub    $0x2,%eax
+   0x000000000040103f <+49>:	cmp    $0x2,%eax
+   0x0000000000401042 <+52>:	jbe    0x401049 <phase_4+59>
+   0x0000000000401044 <+54>:	callq  0x401438 <explode_bomb>
+=> 0x0000000000401049 <+59>:	mov    (%rsp),%esi  //Since eax=0 is below 2, i have directly execute the phase_4+59. Since 0 is less then 2, we can directly jump to phase_4+59, where we will get our second term. %rsp is move to %esi.
+   0x000000000040104c <+62>:	mov    $0x5,%edi
+   0x0000000000401051 <+67>:	callq  0x400fd3 <func4>
+   0x0000000000401056 <+72>:	cmp    0x4(%rsp),%eax
+   0x000000000040105a <+76>:	je     0x401061 <phase_4+83>
+   0x000000000040105c <+78>:	callq  0x401438 <explode_bomb>
+   0x0000000000401061 <+83>:	mov    0x8(%rsp),%rax
+   0x0000000000401066 <+88>:	xor    %fs:0x28,%rax
+   0x000000000040106f <+97>:	je     0x401076 <phase_4+104>
+   0x0000000000401071 <+99>:	callq  0x400b00 <__stack_chk_fail@plt>
+   0x0000000000401076 <+104>:	add    $0x18,%rsp
+   0x000000000040107a <+108>:	retq   
+End of assembler dump.
+(gdb) ni
+0x000000000040104c in phase_4 ()
+(gdb) disas
+Dump of assembler code for function phase_4:
+   0x000000000040100e <+0>:	sub    $0x18,%rsp
+   0x0000000000401012 <+4>:	mov    %fs:0x28,%rax
+   0x000000000040101b <+13>:	mov    %rax,0x8(%rsp)
+   0x0000000000401020 <+18>:	xor    %eax,%eax
+   0x0000000000401022 <+20>:	mov    %rsp,%rcx
+   0x0000000000401025 <+23>:	lea    0x4(%rsp),%rdx
+   0x000000000040102a <+28>:	mov    $0x4025b7,%esi
+   0x000000000040102f <+33>:	callq  0x400bb0 <__isoc99_sscanf@plt>
+   0x0000000000401034 <+38>:	cmp    $0x2,%eax
+   0x0000000000401037 <+41>:	jne    0x401044 <phase_4+54>
+   0x0000000000401039 <+43>:	mov    (%rsp),%eax
+   0x000000000040103c <+46>:	sub    $0x2,%eax
+   0x000000000040103f <+49>:	cmp    $0x2,%eax
+   0x0000000000401042 <+52>:	jbe    0x401049 <phase_4+59>
+   0x0000000000401044 <+54>:	callq  0x401438 <explode_bomb>
+   0x0000000000401049 <+59>:	mov    (%rsp),%esi
+=> 0x000000000040104c <+62>:	mov    $0x5,%edi		//The value 5 is moved to %edi
+   0x0000000000401051 <+67>:	callq  0x400fd3 <func4>
+   0x0000000000401056 <+72>:	cmp    0x4(%rsp),%eax
+   0x000000000040105a <+76>:	je     0x401061 <phase_4+83>
+   0x000000000040105c <+78>:	callq  0x401438 <explode_bomb>
+   0x0000000000401061 <+83>:	mov    0x8(%rsp),%rax
+   0x0000000000401066 <+88>:	xor    %fs:0x28,%rax
+   0x000000000040106f <+97>:	je     0x401076 <phase_4+104>
+   0x0000000000401071 <+99>:	callq  0x400b00 <__stack_chk_fail@plt>
+   0x0000000000401076 <+104>:	add    $0x18,%rsp
+   0x000000000040107a <+108>:	retq   
+End of assembler dump.
+(gdb) ni
+0x0000000000401051 in phase_4 ()
+(gdb) disas
+Dump of assembler code for function phase_4:
+   0x000000000040100e <+0>:	sub    $0x18,%rsp
+   0x0000000000401012 <+4>:	mov    %fs:0x28,%rax
+   0x000000000040101b <+13>:	mov    %rax,0x8(%rsp)
+   0x0000000000401020 <+18>:	xor    %eax,%eax
+   0x0000000000401022 <+20>:	mov    %rsp,%rcx
+   0x0000000000401025 <+23>:	lea    0x4(%rsp),%rdx
+   0x000000000040102a <+28>:	mov    $0x4025b7,%esi
+   0x000000000040102f <+33>:	callq  0x400bb0 <__isoc99_sscanf@plt>
+   0x0000000000401034 <+38>:	cmp    $0x2,%eax
+   0x0000000000401037 <+41>:	jne    0x401044 <phase_4+54>
+   0x0000000000401039 <+43>:	mov    (%rsp),%eax
+   0x000000000040103c <+46>:	sub    $0x2,%eax
+   0x000000000040103f <+49>:	cmp    $0x2,%eax
+   0x0000000000401042 <+52>:	jbe    0x401049 <phase_4+59>
+   0x0000000000401044 <+54>:	callq  0x401438 <explode_bomb>
+   0x0000000000401049 <+59>:	mov    (%rsp),%esi
+   0x000000000040104c <+62>:	mov    $0x5,%edi
+=> 0x0000000000401051 <+67>:	callq  0x400fd3 <func4>        //recurssion
+   0x0000000000401056 <+72>:	cmp    0x4(%rsp),%eax
+   0x000000000040105a <+76>:	je     0x401061 <phase_4+83>
+   0x000000000040105c <+78>:	callq  0x401438 <explode_bomb>
+   0x0000000000401061 <+83>:	mov    0x8(%rsp),%rax
+   0x0000000000401066 <+88>:	xor    %fs:0x28,%rax
+   0x000000000040106f <+97>:	je     0x401076 <phase_4+104>
+   0x0000000000401071 <+99>:	callq  0x400b00 <__stack_chk_fail@plt>
+   0x0000000000401076 <+104>:	add    $0x18,%rsp
+   0x000000000040107a <+108>:	retq   
+End of assembler dump.
+(gdb) ni
+0x0000000000401056 in phase_4 ()
+(gdb) disas
+Dump of assembler code for function phase_4:
+   0x000000000040100e <+0>:	sub    $0x18,%rsp
+   0x0000000000401012 <+4>:	mov    %fs:0x28,%rax
+   0x000000000040101b <+13>:	mov    %rax,0x8(%rsp)
+   0x0000000000401020 <+18>:	xor    %eax,%eax
+   0x0000000000401022 <+20>:	mov    %rsp,%rcx
+   0x0000000000401025 <+23>:	lea    0x4(%rsp),%rdx
+   0x000000000040102a <+28>:	mov    $0x4025b7,%esi
+   0x000000000040102f <+33>:	callq  0x400bb0 <__isoc99_sscanf@plt>
+   0x0000000000401034 <+38>:	cmp    $0x2,%eax
+   0x0000000000401037 <+41>:	jne    0x401044 <phase_4+54>
+   0x0000000000401039 <+43>:	mov    (%rsp),%eax
+   0x000000000040103c <+46>:	sub    $0x2,%eax
+   0x000000000040103f <+49>:	cmp    $0x2,%eax
+   0x0000000000401042 <+52>:	jbe    0x401049 <phase_4+59>
+   0x0000000000401044 <+54>:	callq  0x401438 <explode_bomb>
+   0x0000000000401049 <+59>:	mov    (%rsp),%esi
+   0x000000000040104c <+62>:	mov    $0x5,%edi
+   0x0000000000401051 <+67>:	callq  0x400fd3 <func4>
+=> 0x0000000000401056 <+72>:	cmp    0x4(%rsp),%eax		//%eax is compared with 4+%rsp.	
+   0x000000000040105a <+76>:	je     0x401061 <phase_4+83>
+   0x000000000040105c <+78>:	callq  0x401438 <explode_bomb>
+   0x0000000000401061 <+83>:	mov    0x8(%rsp),%rax
+   0x0000000000401066 <+88>:	xor    %fs:0x28,%rax
+   0x000000000040106f <+97>:	je     0x401076 <phase_4+104>
+   0x0000000000401071 <+99>:	callq  0x400b00 <__stack_chk_fail@plt>
+   0x0000000000401076 <+104>:	add    $0x18,%rsp
+   0x000000000040107a <+108>:	retq   
+End of assembler dump.
+(gdb) i r
+rax            0x18                24				// %eax = 24, the second user input.
+rbx            0x7fffffffdf58      140737488346968
+rcx            0x0                 0
+rdx            0x7fffffffde40      140737488346688
+rsi            0x2                 2
+rdi            0x1                 1
+rbp            0x0                 0x0
+rsp            0x7fffffffde40      0x7fffffffde40
+r8             0xffffffff          4294967295
+r9             0x0                 0
+r10            0x7ffff7f5bac0      140737353464512
+r11            0x0                 0
+r12            0x400c60            4197472
+r13            0x7fffffffdf50      140737488346960
+r14            0x0                 0
+r15            0x0                 0
+rip            0x401056            0x401056 <phase_4+72>
+eflags         0x206               [ PF IF ]
+cs             0x33                51
+ss             0x2b                43
+ds             0x0                 0
+es             0x0                 0
+fs             0x0                 0
+gs             0x0                 0
+(gdb) ni
+0x000000000040105a in phase_4 ()
+(gdb) disas
+Dump of assembler code for function phase_4:
+   0x000000000040100e <+0>:	sub    $0x18,%rsp
+   0x0000000000401012 <+4>:	mov    %fs:0x28,%rax
+   0x000000000040101b <+13>:	mov    %rax,0x8(%rsp)
+   0x0000000000401020 <+18>:	xor    %eax,%eax
+   0x0000000000401022 <+20>:	mov    %rsp,%rcx
+   0x0000000000401025 <+23>:	lea    0x4(%rsp),%rdx
+   0x000000000040102a <+28>:	mov    $0x4025b7,%esi
+   0x000000000040102f <+33>:	callq  0x400bb0 <__isoc99_sscanf@plt>
+   0x0000000000401034 <+38>:	cmp    $0x2,%eax
+   0x0000000000401037 <+41>:	jne    0x401044 <phase_4+54>
+   0x0000000000401039 <+43>:	mov    (%rsp),%eax
+   0x000000000040103c <+46>:	sub    $0x2,%eax
+   0x000000000040103f <+49>:	cmp    $0x2,%eax
+   0x0000000000401042 <+52>:	jbe    0x401049 <phase_4+59>
+   0x0000000000401044 <+54>:	callq  0x401438 <explode_bomb>
+   0x0000000000401049 <+59>:	mov    (%rsp),%esi
+   0x000000000040104c <+62>:	mov    $0x5,%edi
+   0x0000000000401051 <+67>:	callq  0x400fd3 <func4>
+   0x0000000000401056 <+72>:	cmp    0x4(%rsp),%eax
+=> 0x000000000040105a <+76>:	je     0x401061 <phase_4+83>   //if %eax=4+%rsp, then we can execute phase_4+83
+   0x000000000040105c <+78>:	callq  0x401438 <explode_bomb>
+   0x0000000000401061 <+83>:	mov    0x8(%rsp),%rax
+   0x0000000000401066 <+88>:	xor    %fs:0x28,%rax
+   0x000000000040106f <+97>:	je     0x401076 <phase_4+104>
+   0x0000000000401071 <+99>:	callq  0x400b00 <__stack_chk_fail@plt>
+   0x0000000000401076 <+104>:	add    $0x18,%rsp
+   0x000000000040107a <+108>:	retq   
+End of assembler dump.
+(gdb) ni
+0x0000000000401061 in phase_4 ()
+(gdb) disas
+Dump of assembler code for function phase_4:
+   0x000000000040100e <+0>:	sub    $0x18,%rsp
+   0x0000000000401012 <+4>:	mov    %fs:0x28,%rax
+   0x000000000040101b <+13>:	mov    %rax,0x8(%rsp)
+   0x0000000000401020 <+18>:	xor    %eax,%eax
+   0x0000000000401022 <+20>:	mov    %rsp,%rcx
+   0x0000000000401025 <+23>:	lea    0x4(%rsp),%rdx
+   0x000000000040102a <+28>:	mov    $0x4025b7,%esi
+   0x000000000040102f <+33>:	callq  0x400bb0 <__isoc99_sscanf@plt>
+   0x0000000000401034 <+38>:	cmp    $0x2,%eax
+   0x0000000000401037 <+41>:	jne    0x401044 <phase_4+54>
+   0x0000000000401039 <+43>:	mov    (%rsp),%eax
+   0x000000000040103c <+46>:	sub    $0x2,%eax
+   0x000000000040103f <+49>:	cmp    $0x2,%eax
+   0x0000000000401042 <+52>:	jbe    0x401049 <phase_4+59>
+   0x0000000000401044 <+54>:	callq  0x401438 <explode_bomb>
+   0x0000000000401049 <+59>:	mov    (%rsp),%esi
+   0x000000000040104c <+62>:	mov    $0x5,%edi
+   0x0000000000401051 <+67>:	callq  0x400fd3 <func4>
+   0x0000000000401056 <+72>:	cmp    0x4(%rsp),%eax
+   0x000000000040105a <+76>:	je     0x401061 <phase_4+83>
+   0x000000000040105c <+78>:	callq  0x401438 <explode_bomb>
+=> 0x0000000000401061 <+83>:	mov    0x8(%rsp),%rax	//Since %eax=4+%rsp, then i have executed phase_4+83 i.e %eax=24 and rsp value 0x7fffffffde44= 24. 8+%rsp is moved to %eax.
+   0x0000000000401066 <+88>:	xor    %fs:0x28,%rax
+   0x000000000040106f <+97>:	je     0x401076 <phase_4+104>
+   0x0000000000401071 <+99>:	callq  0x400b00 <__stack_chk_fail@plt>
+   0x0000000000401076 <+104>:	add    $0x18,%rsp
+   0x000000000040107a <+108>:	retq   
+End of assembler dump.
+(gdb) ni
+0x0000000000401066 in phase_4 ()
+(gdb) disas
+u*0x000000000040107a			//THen directly excuted the return line
+(gdb) disas
+Dump of assembler code for function phase_4:
+   0x000000000040100e <+0>:	sub    $0x18,%rsp
+   0x0000000000401012 <+4>:	mov    %fs:0x28,%rax
+   0x000000000040101b <+13>:	mov    %rax,0x8(%rsp)
+   0x0000000000401020 <+18>:	xor    %eax,%eax
+   0x0000000000401022 <+20>:	mov    %rsp,%rcx
+   0x0000000000401025 <+23>:	lea    0x4(%rsp),%rdx
+   0x000000000040102a <+28>:	mov    $0x4025b7,%esi
+   0x000000000040102f <+33>:	callq  0x400bb0 <__isoc99_sscanf@plt>
+   0x0000000000401034 <+38>:	cmp    $0x2,%eax
+   0x0000000000401037 <+41>:	jne    0x401044 <phase_4+54>
+   0x0000000000401039 <+43>:	mov    (%rsp),%eax
+   0x000000000040103c <+46>:	sub    $0x2,%eax
+   0x000000000040103f <+49>:	cmp    $0x2,%eax
+   0x0000000000401042 <+52>:	jbe    0x401049 <phase_4+59>
+   0x0000000000401044 <+54>:	callq  0x401438 <explode_bomb>
+   0x0000000000401049 <+59>:	mov    (%rsp),%esi
+   0x000000000040104c <+62>:	mov    $0x5,%edi
+   0x0000000000401051 <+67>:	callq  0x400fd3 <func4>
+   0x0000000000401056 <+72>:	cmp    0x4(%rsp),%eax
+   0x000000000040105a <+76>:	je     0x401061 <phase_4+83>
+   0x000000000040105c <+78>:	callq  0x401438 <explode_bomb>
+   0x0000000000401061 <+83>:	mov    0x8(%rsp),%rax
+   0x0000000000401066 <+88>:	xor    %fs:0x28,%rax
+   0x000000000040106f <+97>:	je     0x401076 <phase_4+104>
+   0x0000000000401071 <+99>:	callq  0x400b00 <__stack_chk_fail@plt>
+   0x0000000000401076 <+104>:	add    $0x18,%rsp
+=> 0x000000000040107a <+108>:	retq   
+End of assembler dump.
+(gdb) ni
+main (argc=<optimized out>, argv=<optimized out>) at bomb.c:96
+96	    phase_defused();						// phase defuse, conclude that given user input is right`
+(gdb) 
+
